@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>昆虫社 | 个人 Blog</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/refresh.css" />
+  </head>
+  <body class="is-preload">
+    <div id="page-wrapper" class="refresh-page">
+      <header class="topbar">
+        <a class="brand" href="index.html">昆虫社</a>
+        <nav class="menu">
+          <a href="index.html">首页</a>
+          <a href="blog.html" class="active">个人 Blog</a>
+          <a href="twocolumn1.html">新手指南</a>
+        </nav>
+      </header>
+
+      <main class="blog-layout">
+        <section class="panel">
+          <h1>发布新文章</h1>
+          <p>内容会自动保存到浏览器本地（localStorage），刷新页面不会丢失。</p>
+          <form id="blogForm" class="blog-form">
+            <label>
+              标题
+              <input id="title" type="text" maxlength="80" required placeholder="例如：第一次拍到竹节虫" />
+            </label>
+            <label>
+              标签
+              <input id="tags" type="text" maxlength="60" placeholder="例如：观察, 饲养, 摄影" />
+            </label>
+            <label>
+              正文
+              <textarea id="content" rows="8" required placeholder="写下今天的观察细节..."></textarea>
+            </label>
+            <button type="submit" class="btn btn-primary">发布文章</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="blog-list-header">
+            <h2>我的文章</h2>
+            <button id="clearBtn" class="btn btn-ghost" type="button">清空全部</button>
+          </div>
+          <div id="postList" class="post-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/blog.js"></script>
+  </body>
+</html>
