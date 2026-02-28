@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>昆虫社 | 焕新主页</title>
+    <title>昆虫社 | Insect Journal</title>
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/refresh.css" />
   </head>
   <body class="is-preload">
     <div id="page-wrapper" class="refresh-page">
       <header class="topbar">
-        <a class="brand" href="index.html">昆虫社</a>
+        <a class="brand" href="index.html">🐞 昆虫社</a>
         <nav class="menu">
           <a href="index.html" class="active">首页</a>
           <a href="blog.html">个人 Blog</a>
@@ -23,30 +23,30 @@
       <main>
         <section class="hero">
           <div>
-            <p class="tag">INSECT EXPLORER</p>
-            <h1>让热爱发声，记录每一次观察</h1>
+            <p class="tag">INSECT EXPLORER · 观察 · 记录 · 分享</p>
+            <h1>焕新上线：你的昆虫观察空间</h1>
             <p class="intro">
-              欢迎来到焕新后的昆虫社。这里是你的昆虫观察笔记、饲养心得和摄影作品展厅，
-              现在还新增了个人 Blog 功能，轻松发布每一篇成长记录。
+              把每一次野外发现、饲养变化和拍摄心得，沉淀成可检索、可管理的个人内容资产。
+              现在支持个人 Blog 写作、编辑、搜索与本地导出。
             </p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="blog.html">立即写 Blog</a>
-              <a class="btn btn-ghost" href="https://www.inaturalist.org/observations?taxon_id=47335">查看观察数据库</a>
+              <a class="btn btn-primary" href="blog.html">开始写第一篇</a>
+              <a class="btn btn-ghost" href="https://www.inaturalist.org/observations?taxon_id=47335">查看 iNaturalist 观察</a>
             </div>
           </div>
           <figure>
-            <img src="images/sousuo.jpeg" alt="昆虫观察" />
+            <img src="images/sousuo.jpeg" alt="昆虫观察与记录" />
           </figure>
         </section>
 
         <section class="panel-grid">
           <article class="panel">
-            <h2>今日时钟</h2>
+            <h2>实时节奏</h2>
             <p id="clock" class="clock">00:00:00</p>
-            <small>保持节奏，持续记录。</small>
+            <small>每天记录一点点，长期就会很不一样。</small>
           </article>
           <article class="panel">
-            <h2>快捷入口</h2>
+            <h2>快速访问</h2>
             <div class="quick-links">
               <a href="poki.html">小游戏 1</a>
               <a href="index (4).html">小游戏 2</a>
@@ -54,18 +54,28 @@
             </div>
           </article>
           <article class="panel">
-            <h2>本周目标</h2>
+            <h2>今日任务</h2>
             <ul>
-              <li>完成 3 篇昆虫观察记录</li>
-              <li>整理 1 次拍摄器材清单</li>
-              <li>分享 1 篇养护经验 Blog</li>
+              <li>补充 1 条观察照片</li>
+              <li>整理 1 篇饲养日志</li>
+              <li>发布 1 篇 Blog 心得</li>
             </ul>
           </article>
+        </section>
+
+        <section class="panel latest-posts">
+          <div class="blog-list-header">
+            <h2>最近 Blog 文章</h2>
+            <a class="btn btn-ghost" href="blog.html">进入管理页</a>
+          </div>
+          <div id="latestPosts" class="post-list"></div>
         </section>
       </main>
     </div>
 
     <script>
+      const STORAGE_KEY = "kunchongshe_posts";
+
       function formatTime(unit) {
         return unit < 10 ? "0" + unit : unit;
       }
@@ -78,8 +88,32 @@
         document.getElementById("clock").innerText = `${hours}:${minutes}:${seconds}`;
       }
 
+      function renderLatestPosts() {
+        const list = document.getElementById("latestPosts");
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const posts = raw ? JSON.parse(raw) : [];
+        list.innerHTML = "";
+
+        if (!posts.length) {
+          list.innerHTML = '<p class="muted">还没有 Blog，点击「开始写第一篇」创建吧。</p>';
+          return;
+        }
+
+        posts.slice(0, 3).forEach((post) => {
+          const item = document.createElement("article");
+          item.className = "post-card";
+          item.innerHTML = `
+            <h3>${post.title}</h3>
+            <p class="meta">${post.date || ""}</p>
+            <p class="body">${(post.content || "").slice(0, 100)}${(post.content || "").length > 100 ? "..." : ""}</p>
+          `;
+          list.appendChild(item);
+        });
+      }
+
       setInterval(updateClock, 1000);
       updateClock();
+      renderLatestPosts();
     </script>
   </body>
 </html>

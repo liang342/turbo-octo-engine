@@ -1,21 +1,24 @@
 :root {
-  --bg: #f4f7fb;
+  --bg: #f1f5ff;
   --card: #ffffff;
   --text: #1f2937;
   --muted: #6b7280;
   --primary: #2563eb;
+  --primary-strong: #1d4ed8;
   --primary-soft: #dbeafe;
+  --border: #e5e7eb;
+  --shadow: 0 12px 28px rgba(37, 99, 235, 0.08);
 }
 
 body.refresh-page,
 .refresh-page {
-  background: radial-gradient(circle at top, #e0ecff 0%, var(--bg) 35%, var(--bg) 100%);
+  background: radial-gradient(circle at 5% 0%, #dbeafe 0%, var(--bg) 45%, #f8fbff 100%);
   color: var(--text);
   min-height: 100vh;
 }
 
 .topbar {
-  max-width: 1080px;
+  max-width: 1100px;
   margin: 24px auto 0;
   padding: 14px 20px;
   border-radius: 16px;
@@ -23,8 +26,10 @@ body.refresh-page,
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
 }
 
 .brand {
@@ -43,8 +48,9 @@ body.refresh-page,
 .menu a {
   color: var(--muted);
   text-decoration: none;
-  padding: 6px 10px;
+  padding: 7px 11px;
   border-radius: 10px;
+  transition: 0.2s ease;
 }
 
 .menu a.active,
@@ -54,8 +60,8 @@ body.refresh-page,
 }
 
 main {
-  max-width: 1080px;
-  margin: 20px auto 40px;
+  max-width: 1100px;
+  margin: 20px auto 42px;
   padding: 0 6px;
 }
 
@@ -64,8 +70,10 @@ main {
   grid-template-columns: 1.2fr 0.8fr;
   gap: 24px;
   align-items: center;
-  background: var(--card);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid var(--border);
   border-radius: 20px;
+  box-shadow: var(--shadow);
   padding: 28px;
 }
 
@@ -77,6 +85,7 @@ main {
   width: 100%;
   border-radius: 16px;
   object-fit: cover;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.15);
 }
 
 .tag {
@@ -89,6 +98,7 @@ main {
 
 .intro {
   color: var(--muted);
+  line-height: 1.75;
 }
 
 .hero-actions {
@@ -105,11 +115,17 @@ main {
   padding: 10px 14px;
   text-decoration: none;
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: linear-gradient(120deg, var(--primary), var(--primary-strong));
   color: #fff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.28);
 }
 
 .btn-ghost {
@@ -127,7 +143,9 @@ main {
 .panel {
   background: var(--card);
   border-radius: 16px;
+  border: 1px solid var(--border);
   padding: 20px;
+  box-shadow: var(--shadow);
 }
 
 .clock {
@@ -147,6 +165,10 @@ main {
   text-decoration: none;
 }
 
+.latest-posts {
+  margin-top: 16px;
+}
+
 .blog-layout {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -160,19 +182,39 @@ main {
 }
 
 .blog-form input,
-.blog-form textarea {
+.blog-form textarea,
+.search-wrap input {
   width: 100%;
   border: 1px solid #d1d5db;
   border-radius: 10px;
   padding: 10px;
   font: inherit;
   margin-top: 6px;
+  background: #fff;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .blog-list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
+}
+
+.list-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.search-wrap {
+  margin-top: 10px;
+  display: block;
 }
 
 .post-list {
@@ -183,9 +225,10 @@ main {
 }
 
 .post-card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px;
+  background: #fcfdff;
 }
 
 .post-card .meta,
@@ -196,11 +239,21 @@ main {
 
 .post-card .body {
   white-space: pre-wrap;
+  line-height: 1.65;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .small {
   padding: 6px 10px;
-  margin-top: 8px;
+}
+
+.hidden {
+  display: none;
 }
 
 @media (max-width: 900px) {

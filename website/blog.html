@@ -10,7 +10,7 @@
   <body class="is-preload">
     <div id="page-wrapper" class="refresh-page">
       <header class="topbar">
-        <a class="brand" href="index.html">昆虫社</a>
+        <a class="brand" href="index.html">🐞 昆虫社</a>
         <nav class="menu">
           <a href="index.html">首页</a>
           <a href="blog.html" class="active">个人 Blog</a>
@@ -20,30 +20,42 @@
 
       <main class="blog-layout">
         <section class="panel">
-          <h1>发布新文章</h1>
-          <p>内容会自动保存到浏览器本地（localStorage），刷新页面不会丢失。</p>
+          <h1 id="formTitle">发布新文章</h1>
+          <p>支持草稿自动保存、文章编辑、标签过滤和 JSON 导出。</p>
           <form id="blogForm" class="blog-form">
+            <input id="editingId" type="hidden" />
             <label>
               标题
               <input id="title" type="text" maxlength="80" required placeholder="例如：第一次拍到竹节虫" />
             </label>
             <label>
-              标签
+              标签（逗号分隔）
               <input id="tags" type="text" maxlength="60" placeholder="例如：观察, 饲养, 摄影" />
             </label>
             <label>
               正文
               <textarea id="content" rows="8" required placeholder="写下今天的观察细节..."></textarea>
+              <small id="wordCount" class="muted">0 字</small>
             </label>
-            <button type="submit" class="btn btn-primary">发布文章</button>
+            <div class="form-actions">
+              <button id="submitBtn" type="submit" class="btn btn-primary">发布文章</button>
+              <button id="cancelEditBtn" type="button" class="btn btn-ghost hidden">取消编辑</button>
+            </div>
           </form>
         </section>
 
         <section class="panel">
           <div class="blog-list-header">
             <h2>我的文章</h2>
-            <button id="clearBtn" class="btn btn-ghost" type="button">清空全部</button>
+            <div class="list-actions">
+              <button id="exportBtn" class="btn btn-ghost" type="button">导出 JSON</button>
+              <button id="clearBtn" class="btn btn-ghost" type="button">清空全部</button>
+            </div>
           </div>
+          <label class="search-wrap">
+            搜索
+            <input id="searchInput" type="text" placeholder="按标题、标签或正文搜索" />
+          </label>
           <div id="postList" class="post-list"></div>
         </section>
       </main>
