@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <title>贪吃蛇小游戏</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(30, 20px);
+            grid-template-rows: repeat(30, 20px);
+            gap: 1px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        .snake {
+            background-color: #00FF00;
+            border-radius: 3px;
+            transition: all 0.1s ease;
+        }
+
+        .food {
+            background-color: #FF0000;
+            border-radius: 50%;
+        }
+
+        #control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #speed-slider {
+            width: 100%;
+        }
+
+        #score-display {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #mobile-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        #mobile-controls button {
+            padding: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-container">
+        <div id="game-board"></div>
+        <div id="control-panel">
+            <label for="speed-slider">速度调节:</label>
+            <input type="range" id="speed-slider" min="100" max="500" value="200">
+            <div id="score-display">得分: 0</div>
+        </div>
+        <div id="mobile-controls">
+            <button id="up-btn">↑</button>
+            <button id="left-btn">←</button>
+            <button id="right-btn">→</button>
+            <button id="down-btn">↓</button>
+        </div>
+    </div>
+    <script>
+        const gameBoard = document.getElementById('game-board');
+        const speedSlider = document.getElementById('speed-slider');
+        const scoreDisplay = document.getElementById('score-display');
+        const upBtn = document.getElementById('up-btn');
+        const leftBtn = document.getElementById('left-btn');
+        const rightBtn = document.getElementById('right-btn');
+        const downBtn = document.getElementById('down-btn');
+        const gridSize = 30;
+        let snake = [{ x: 15, y: 15 }];
+        let food = { x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize) };
+        let direction = 'right';
+        let gameInterval;
+        let score = 0;
+
+        // 人机相关
+        let aiSnakes = [];
+        const numAI = 2;
+        for (let i = 0; i < numAI; i++) {
+            let aiSnake = [{ x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize) }];
+            let aiDirection = ['right', 'left', 'up', 'down'][Math.floor(Math.random() * 4)];
+            aiSnakes.push({ snake: aiSnake, direction: aiDirection });
+        }
+
+        function draw() {
+            gameBoard.innerHTML = '';
+            snake.forEach(segment => {
+                const snakeElement = document.createElement('div');
+                snakeElement.classList.add('snake');
+                snakeElement.style.gridColumn = segment.x + 1;
+                snakeElement.style.gridRow = segment.y + 1;
+                gameBoard.appendChild(snakeElement);
+            });
+            aiSnakes.forEach(ai => {
+                ai.snake.forEach(segment => {
+                    const snakeElement = document.createElement('div');
+                    snakeElement.classList.add('snake');
+                    snakeElement.style.gridColumn = segment.x + 1;
+                    snakeElement.style.gridRow = segment.y + 1;
+                    snakeElement.style.backgroundColor = 'purple';
+                    gameBoard.appendChild(snakeElement);
+                });
+            });
+            const foodElement = document.createElement('div');
+            foodElement.classList.add('food');
+            foodElement.style.gridColumn = food.x + 1;
+            foodElement.style.gridRow = food.y + 1;
+            gameBoard.appendChild(foodElement);
+        }
+
+        function move() {
+            const head = { ...snake[0] };
+            switch (direction) {
+                case 'right':
+                    head.x++;
+                    break;
+                case 'left':
+                    head.x--;
+                    break;
+                case 'up':
+                    head.y--;
+                    break;
+                case 'down':
+                    head.y++;
+                    break;
+            }
+
+            // 优化边界判断
+            if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
+                clearInterval(gameInterval);
+                alert(`游戏结束！得分: ${score}`);
+                return;
+            }
+
+            // 检查是否撞到自己
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    clearInterval(gameInterval);
+                    alert(`游戏结束！得分: ${score}`);
+                    return;
+                }
+            }
+
+            // 检查是否撞到人机
+            aiSnakes.forEach(ai => {
+                for (let i = 0; i < ai.snake.length; i++) {
+                    if (head.x === ai.snake[i].x && head.y === ai.snake[i].y) {
+                        clearInterval(gameInterval);
+                        alert(`游戏结束！得分: ${score}`);
+                        return;
+                    }
+                }
+            });
+
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+                food = { x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize) };
+                score++;
+                scoreDisplay.textContent = `得分: ${score}`;
+            } else {
+                snake.pop();
+            }
+
+            // 人机移动
+            aiSnakes.forEach(ai => {
+                let aiHead = { ...ai.snake[0] };
+                switch (ai.direction) {
+                    case 'right':
+                        aiHead.x++;
+                        break;
+                    case 'left':
+                        aiHead.x--;
+                        break;
+                    case 'up':
+                        aiHead.y--;
+                        break;
+                    case 'down':
+                        aiHead.y++;
+                        break;
+                }
+
+                // 人机边界判断
+                if (aiHead.x < 0 || aiHead.x >= gridSize || aiHead.y < 0 || aiHead.y >= gridSize) {
+                    ai.direction = ['right', 'left', 'up', 'down'][Math.floor(Math.random() * 4)];
+                    return;
+                }
+
+                // 人机撞到自己或其他蛇
+                for (let i = 1; i < ai.snake.length; i++) {
+                    if (aiHead.x === ai.snake[i].x && aiHead.y === ai.snake[i].y) {
+                        ai.direction = ['right', 'left', 'up', 'down'][Math.floor(Math.random() * 4)];
+                        return;
+                    }
+                }
+                aiSnakes.forEach(otherAI => {
+                    if (ai!== otherAI) {
+                        for (let i = 0; i < otherAI.snake.length; i++) {
+                            if (aiHead.x === otherAI.snake[i].x && aiHead.y === otherAI.snake[i].y) {
+                                ai.direction = ['right', 'left', 'up', 'down'][Math.floor(Math.random() * 4)];
+                                return;
+                            }
+                        }
+                    }
+                });
+
+                ai.snake.unshift(aiHead);
+                if (aiHead.x === food.x && aiHead.y === food.y) {
+                    food = { x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize) };
+                } else {
+                    ai.snake.pop();
+                }
+            });
+        }
+
+        function changeDirection(event) {
+            const key = event.key;
+            if ((key === 'ArrowRight' || key === 'd') && direction!== 'left') {
+                direction = 'right';
+            } else if ((key === 'ArrowLeft' || key === 'a') && direction!== 'right') {
+                direction = 'left';
+            } else if ((key === 'ArrowUp' || key === 'w') && direction!== 'down') {
+                direction = 'up';
+            } else if ((key === 'ArrowDown' || key === 's') && direction!== 'up') {
+                direction = 'down';
+            }
+        }
+
+        upBtn.addEventListener('click', () => {
+            if (direction!== 'down') direction = 'up';
+        });
+        leftBtn.addEventListener('click', () => {
+            if (direction!== 'right') direction = 'left';
+        });
+        rightBtn.addEventListener('click', () => {
+            if (direction!== 'left') direction = 'right';
+        });
+        downBtn.addEventListener('click', () => {
+            if (direction!== 'up') direction = 'down';
+        });
+
+        function startGame() {
+            draw();
+            gameInterval = setInterval(() => {
+                move();
+                draw();
+            }, parseInt(speedSlider.value));
+        }
+
+        speedSlider.addEventListener('input', function () {
+            clearInterval(gameInterval);
+            startGame();
+        });
+
+        document.addEventListener('keydown', changeDirection);
+        startGame();
+    </script>
+</body>
+
+</html>
+    
