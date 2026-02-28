@@ -263,3 +263,16 @@ main {
     grid-template-columns: 1fr;
   }
 }
+
+.topbar-inject {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1100px, calc(100% - 24px));
+  z-index: 2000;
+}
+
+body.with-inject-topbar {
+  padding-top: 90px;
+}
