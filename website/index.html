@@ -1,119 +1,119 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>昆虫社 | Insect Journal</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/refresh.css" />
+  </head>
+  <body class="is-preload">
+    <div id="page-wrapper" class="refresh-page">
+      <header class="topbar">
+        <a class="brand" href="index.html">昆虫社</a>
+        <nav class="menu">
+          <a href="index.html" class="active">首页</a>
+          <a href="blog.html">个人 Blog</a>
+          <a href="twocolumn1.html">新手指南</a>
+          <a href="onecolumn.html">资源</a>
+          <a href="threecolumn.html">网站推荐</a>
+        </nav>
+      </header>
 
-<!--Powered by Liang-->
+      <main>
+        <section class="hero">
+          <div>
+            <p class="tag">INSECT EXPLORER · 观察 · 记录 · 分享</p>
+            <h1>空间</h1>
+            <p class="intro">
+              把每一次野外发现、饲养变化和拍摄心得，沉淀成可检索、可管理的个人内容资产。
+              现在支持个人 Blog 写作、编辑、搜索与本地导出。
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="blog.html">开始写第一篇</a>
+              <a class="btn btn-ghost" href="https://www.inaturalist.org/observations?taxon_id=47335">查看 iNaturalist 观察</a>
+            </div>
+          </div>
+          <figure>
+            <img src="images/sousuo.jpeg" alt="昆虫观察与记录" />
+          </figure>
+        </section>
 
+        <section class="panel-grid">
+          <article class="panel">
+            <h2>实时节奏</h2>
+            <p id="clock" class="clock">00:00:00</p>
+            <small>每天记录一点点，长期就会很不一样。</small>
+          </article>
+          <article class="panel">
+            <h2>快速访问</h2>
+            <div class="quick-links">
+              <a href="poki.html">小游戏 1</a>
+              <a href="index (4).html">小游戏 2</a>
+              <a href="upload.asp">实验上传页</a>
+            </div>
+          </article>
+          <article class="panel">
+            <h2>今日任务</h2>
+            <ul>
+              <li>补充 1 条观察照片</li>
+              <li>整理 1 篇饲养日志</li>
+              <li>发布 1 篇 Blog 心得</li>
+            </ul>
+          </article>
+        </section>
 
-<!--Main-->
-<html>
-	<head>
-		<title>新手</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		
-		<link rel="stylesheet" href="css/main.css" />
-		<link rel="stylesheet" href="images/yjtp.ico" />
-	</head>
-	<body>
-		<div id="page-wrapper">
-
-			<!-- Header -->
-				<div id="header-wrapper">
-					<div class="container">
-						<div class="row">
-							<div class="col-12">
-
-								<header id="header">
-									<h1><a href="index.html" id="logo">昆虫社</a></h1>
-									<nav id="nav">
-										<a href="index.html" class="current-page-item">Home</a>
-										<a href="twocolumn1.html"><i>新手指南</i></a>
-										<a href="twocolumn2.html">留言</a>
-										<a href="onecolumn.html">资源</a>
-										<a href="threecolumn.html">网站推荐</a>
-
-									</nav>
-								</header>
-
-							</div>
-						</div>
-					</div>
-				</div>
-
-			<!-- Banner -->
-				<div id="banner-wrapper">
-					<div class="container">
-
-						<div id="banner">
-							<h2>全异君 昆虫社</h2>
-
-							<span>这.....</span>
-
-						</div>
-
-     <head>
-    <!--Small Mode-->
-
-   <a href="https://www.inaturalist.org/observations?taxon_id=47335"><img src="images/sousuo.jpeg" alt="" class="center" /></a>
-
-    <style>
-
-        #clock {
-
-            font-size: 48px;
-
-            font-family: 'Arial', sans-serif;
-
-            text-align: center;
-
-            margin-top: 7%;
-
-        }
-
-    </style>
-
-    <div id="clock"></div>
+        <section class="panel latest-posts">
+          <div class="blog-list-header">
+            <h2>最近 Blog 文章</h2>
+            <a class="btn btn-ghost" href="blog.html">进入管理页</a>
+          </div>
+          <div id="latestPosts" class="post-list"></div>
+        </section>
+      </main>
+    </div>
 
     <script>
+      const STORAGE_KEY = "kunchongshe_posts";
 
-        function formatTime(unit) {
+      function formatTime(unit) {
+        return unit < 10 ? "0" + unit : unit;
+      }
 
-            return unit < 10 ? '0' + unit : unit;
+      function updateClock() {
+        const now = new Date();
+        const hours = formatTime(now.getHours());
+        const minutes = formatTime(now.getMinutes());
+        const seconds = formatTime(now.getSeconds());
+        document.getElementById("clock").innerText = `${hours}:${minutes}:${seconds}`;
+      }
 
+      function renderLatestPosts() {
+        const list = document.getElementById("latestPosts");
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const posts = raw ? JSON.parse(raw) : [];
+        list.innerHTML = "";
+
+        if (!posts.length) {
+          list.innerHTML = '<p class="muted">还没有 Blog，点击「开始写第一篇」创建吧。</p>';
+          return;
         }
 
-        function updateClock() {
+        posts.slice(0, 3).forEach((post) => {
+          const item = document.createElement("article");
+          item.className = "post-card";
+          item.innerHTML = `
+            <h3>${post.title}</h3>
+            <p class="meta">${post.date || ""}</p>
+            <p class="body">${(post.content || "").slice(0, 100)}${(post.content || "").length > 100 ? "..." : ""}</p>
+          `;
+          list.appendChild(item);
+        });
+      }
 
-            let now = new Date();
-
-            let hours = formatTime(now.getHours());
-
-            let minutes = formatTime(now.getMinutes());
-
-            let seconds = formatTime(now.getSeconds());
-
-            let timeString = `${hours}:${minutes}:${seconds}`;
-
-            document.getElementById('clock').innerText = timeString;
-
-        }
-
-        setInterval(updateClock, 1000);
-
-        updateClock(); 
-
-          </script>
-                   <nav id="nav">
-		           <a href="poki.html">小游戏</a>
-		           <a href="index (4).html">小游戏</a>                 
-		           <a href="upload.asp">别手欠！</a>
-			      </nav>
-						<!-- Scripts -->
-			<script src="js/jquery.min.js"></script>
-			<script src="js/browser.min.js"></script>
-			<script src="js/breakpoints.min.js"></script>
-			<script src="js/util.js"></script>
-			<script src="js/main.js"></script>
-				</div>
-
-	         </body>
-             </html>
+      setInterval(updateClock, 1000);
+      updateClock();
+      renderLatestPosts();
+    </script>
+  </body>
+</html>
